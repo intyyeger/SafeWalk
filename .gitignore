@@ -228,3 +228,4 @@ yolov7/
 __pycache__/
 runs/
 *.pt
+*.mp4
