@@ -15,4 +15,5 @@ def convert_coor(img_shape, dets, im0_shape):
     return dets
 
 
-def draw_box()
+def draw_box():
+    return 0
