@@ -8,10 +8,12 @@ import time
 import argparse
 import numpy as np
 import torch
+import copy
 
 from numpy import random
 
 from main_utils.make_box import convert_coor
+from main_utils.find_sign import traffic_light_recognition
 # from main_utils.tracker import tracking
 
 from yolov7.detect import detect
@@ -26,7 +28,9 @@ from yolov7.utils.torch_utils import select_device, time_synchronized
 # WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt' 
 SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
 WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt'
+# WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
 WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
+
 IMG_SIZE = 640
 DEVICE = ''   # cuda???
 AUGMENT = False
@@ -71,6 +75,9 @@ print("****************************************************************")
 print()
 
 cur_frame = 0
+has_crosswalk = 0
+now_red = 0
+now_green = 0
 
 if __name__ == '__main__':
 
@@ -85,6 +92,10 @@ if __name__ == '__main__':
     while True:
 
         cur_frame += 1
+
+        has_crosswalk = 0
+        now_red = 0
+        now_green = 0
 
         result, img0 = vids.read()
         # img0 = cv2.imread(SOURCE)  # BGR
@@ -106,17 +117,50 @@ if __name__ == '__main__':
         #[0].cpu().numpy()
 
         if len(pred_crosswalk[0]) != 0:
+
             pred_crosswalk = convert_coor(img.shape[2:], pred_crosswalk, img0.shape)
+            has_crosswalk = 1
+
         if len(pred_sign_car[0]) != 0:
+
             pred_sign_car = convert_coor(img.shape[2:], pred_sign_car, img0.shape)
+
         for idx in range(len(pred_crosswalk[0])):
-            img2 = cv2.rectangle(img0, (int(pred_crosswalk[0][idx][0]), int(pred_crosswalk[0][idx][3])), (int(pred_crosswalk[0][idx][2]), int(pred_crosswalk[0][idx][1])), (0, 200, 0), 2)
+
+            img2 = cv2.rectangle(img0, (int(pred_crosswalk[0][idx][0]), int(pred_crosswalk[0][idx][1])), (int(pred_crosswalk[0][idx][2]), int(pred_crosswalk[0][idx][3])), (0, 200, 0), 2)
+
         for idx in range(len(pred_sign_car[0])):
-            if pred_sign_car[0][idx][5] != 9:
-                img2 = cv2.rectangle(img0, (int(pred_sign_car[0][idx][0]), int(pred_sign_car[0][idx][3])), (int(pred_sign_car[0][idx][2]), int(pred_sign_car[0][idx][1])), (0, 0, 200), 2)
+            
+            if pred_sign_car[0][idx][5] == 9:
+
+                traffic_flag = traffic_light_recognition(img0, int(pred_sign_car[0][idx][0]), int(pred_sign_car[0][idx][1]), int(pred_sign_car[0][idx][2]), int(pred_sign_car[0][idx][3]))
+                
+                if traffic_flag != -1:
+                    img2 = cv2.rectangle(img0, (int(pred_sign_car[0][idx][0]), int(pred_sign_car[0][idx][1])), (int(pred_sign_car[0][idx][2]), int(pred_sign_car[0][idx][3])), (0, 0, 200), 2)
+
+                if now_red != 1 and traffic_flag == 0:
+                    now_green = 0
+                    now_red = 1
+                
+                elif now_red != 1 and traffic_flag == 1:
+                    now_green = 1
+                    now_red = 0
+
             else:
-                img2 = cv2.rectangle(img0, (int(pred_sign_car[0][idx][0]), int(pred_sign_car[0][idx][3])), (int(pred_sign_car[0][idx][2]), int(pred_sign_car[0][idx][1])), (200, 0, 0), 2)
-        
+                img2 = cv2.rectangle(img0, (int(pred_sign_car[0][idx][0]), int(pred_sign_car[0][idx][1])), (int(pred_sign_car[0][idx][2]), int(pred_sign_car[0][idx][3])), (200, 0, 0), 2)
+ 
+
+        if has_crosswalk == 1:
+            if now_red == 1:
+                pass # 건너지 마라
+            elif now_green == 1:
+                pass # 건너라는 신호
+            elif now_red == 1 and now_green == 1:
+                pass # 차에 따라서 건너라
+
+        print('cross walk', has_crosswalk)
+        print(now_red, now_green)
+
         cv2.imshow('frame', img2)
 
         if cv2.waitKey(100) == 27: 
