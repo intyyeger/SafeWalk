@@ -39,6 +39,17 @@ IOU_THRES = 0.45
 CLASSES = None
 AGNOSTIC_NMS = False
 
+#Firebase Realtime database access
+cred = credentials.Certificate('safe-walk-server-firebase-adminsdk-7ymx1-34616ba0e4.json')
+firebase_admin.initialize_app(cred,{
+    'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
+    'storageBucket' : "safe-walk-server.appspot.com"
+})
+dir = db.reference()
+dir.update({'Red':0})
+dir.update({'Green':0})
+dir.update({'No Detection':1})
+
 
 print("****************************************************************")
 print('YOLOv7 INITIALIZING...')
@@ -152,11 +163,15 @@ if __name__ == '__main__':
 
         if has_crosswalk == 1:
             if now_red == 1:
-                pass # 건너지 마라
+                dir.update({'No Detection':0})
+                dir.update({'Red':1}) # 건너지 마라
+                dir.update({'Green':0})
             elif now_green == 1:
-                pass # 건너라는 신호
+                dir.update({'No Detection':0})
+                dir.update({'Red':0}) # 건너라는 신호
+                dir.update({'Green':1})
             elif now_red == 1 and now_green == 1:
-                pass # 차에 따라서 건너라
+                dir.update({'No Detection':1}) # 차에 따라서 건너라
 
         print('cross walk', has_crosswalk)
         print(now_red, now_green)
