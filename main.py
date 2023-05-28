@@ -26,10 +26,13 @@ from yolov7.utils.torch_utils import select_device, time_synchronized
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0575.JPG'
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0521.JPG'
 # WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt' 
-SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
-WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt'
+SOURCE = "http://192.168.107.64:81/stream"
+# SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
+WEIGHTS_CROSSWALK = 'C:/Users/baeju/Desktop/final/SafeWalk/yolov7/epoch_029.pt'
 # WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
-WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
+# WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
+WEIGHTS_SIGN_CAR = 'C:/Users/baeju/Desktop/final/SafeWalk/yolov7/yolov7x.pt'
+
 
 IMG_SIZE = 640
 DEVICE = ''   # cuda???
@@ -40,7 +43,7 @@ CLASSES = None
 AGNOSTIC_NMS = False
 
 #Firebase Realtime database access
-cred = credentials.Certificate('safe-walk-server-firebase-adminsdk-7ymx1-34616ba0e4.json')
+cred = credentials.Certificate('xxxxxxxxxxxxxxxxxxxxx')
 firebase_admin.initialize_app(cred,{
     'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
     'storageBucket' : "safe-walk-server.appspot.com"
