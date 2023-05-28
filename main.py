@@ -26,9 +26,16 @@ from yolov7.utils.torch_utils import select_device, time_synchronized
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0575.JPG'
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0521.JPG'
 # WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt' 
+<<<<<<< HEAD
 SOURCE = "http://192.168.107.64:81/stream"
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
 WEIGHTS_CROSSWALK = 'C:/Users/baeju/Desktop/final/SafeWalk/yolov7/epoch_029.pt'
+=======
+SOURCE = 'http://192.168.107.64:81/stream'
+# SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
+
+WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt'
+>>>>>>> 60384ad14cb946591ff507e2cfa60d25f1923418
 # WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
 # WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
 WEIGHTS_SIGN_CAR = 'C:/Users/baeju/Desktop/final/SafeWalk/yolov7/yolov7x.pt'
@@ -42,12 +49,25 @@ IOU_THRES = 0.45
 CLASSES = None
 AGNOSTIC_NMS = False
 
+<<<<<<< HEAD
 #Firebase Realtime database access
 cred = credentials.Certificate('xxxxxxxxxxxxxxxxxxxxx')
 firebase_admin.initialize_app(cred,{
     'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
     'storageBucket' : "safe-walk-server.appspot.com"
 })
+=======
+# #Firebase Realtime database access
+# <<<<<<< JYS
+# cred = credentials.Certificate('C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/safe-walk-server-firebase-adminsdk-7ymx1-f530c53769.json')
+# =======
+# cred = credentials.Certificate('safe-walk-server-firebase-adminsdk-7ymx1-34616ba0e4.json')
+# >>>>>>> master
+# firebase_admin.initialize_app(cred,{
+#     'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
+#     'storageBucket' : "safe-walk-server.appspot.com"
+# })  
+>>>>>>> 60384ad14cb946591ff507e2cfa60d25f1923418
 dir = db.reference()
 dir.update({'Red':0})
 dir.update({'Green':0})
@@ -96,6 +116,7 @@ now_green = 0
 if __name__ == '__main__':
 
     vids = cv2.VideoCapture(SOURCE)
+
     if not vids.isOpened():
 
         print("****************************************************************")
@@ -112,6 +133,10 @@ if __name__ == '__main__':
         now_green = 0
 
         result, img0 = vids.read()
+        img0 = cv2.rotate(img0, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+        if result == False: break
+
         # img0 = cv2.imread(SOURCE)  # BGR
         img = letterbox(img0, imgsz, stride=stride)[0]
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -127,7 +152,7 @@ if __name__ == '__main__':
             pred_sign_car = model_sign_car(img, augment=False)[0]
 
         pred_crosswalk = non_max_suppression(pred_crosswalk, conf_thres=0.10)
-        pred_sign_car = non_max_suppression(pred_sign_car, conf_thres=0.25, classes=[2, 3, 5, 7, 9])
+        pred_sign_car = non_max_suppression(pred_sign_car, conf_thres=0.10, classes=[2, 3, 5, 7, 9])
         #[0].cpu().numpy()
 
         if len(pred_crosswalk[0]) != 0:
@@ -139,6 +164,7 @@ if __name__ == '__main__':
 
             pred_sign_car = convert_coor(img.shape[2:], pred_sign_car, img0.shape)
 
+        img2 = img0
         for idx in range(len(pred_crosswalk[0])):
 
             img2 = cv2.rectangle(img0, (int(pred_crosswalk[0][idx][0]), int(pred_crosswalk[0][idx][1])), (int(pred_crosswalk[0][idx][2]), int(pred_crosswalk[0][idx][3])), (0, 200, 0), 2)
@@ -181,10 +207,11 @@ if __name__ == '__main__':
 
         cv2.imshow('frame', img2)
 
-        if cv2.waitKey(100) == 27: 
-            print('\n')
-            print("Exit Program...")
-            break
+        if cv2.waitKey(100) == 27: break
+        # cv2.destroyAllWindows()
 
+    print('\n')
+    print("Exit Program...")
+    
     vids.release()
     cv2.destroyAllWindows()
