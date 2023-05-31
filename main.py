@@ -26,8 +26,8 @@ from yolov7.utils.torch_utils import select_device, time_synchronized
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0575.JPG'
 # SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/dataset/PTL_Dataset_876x657/heon_IMG_0521.JPG'
 # WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt' 
-SOURCE = 'http://192.168.107.64:81/stream'
-# SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
+# SOURCE = 'http://192.168.184.64:81/stream'
+SOURCE = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/crosswalk_vid.mp4'
 
 WEIGHTS_CROSSWALK = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/epoch_029.pt'
 # WEIGHTS_SIGN_CAR = 'C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/yolov7/yolov7x.pt'
@@ -185,8 +185,9 @@ if __name__ == '__main__':
         print(now_red, now_green)
 
         cv2.imshow('frame', img2)
+        
 
-        if cv2.waitKey(100) == 27: break
+        if cv2.waitKey(1000) == 27: break
         # cv2.destroyAllWindows()
 
     print('\n')
