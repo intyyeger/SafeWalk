@@ -41,12 +41,16 @@ IOU_THRES = 0.45
 CLASSES = None
 AGNOSTIC_NMS = False
 
-#Firebase Realtime database access
-cred = credentials.Certificate('C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/safe-walk-server-firebase-adminsdk-7ymx1-f530c53769.json')
-firebase_admin.initialize_app(cred,{
-    'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
-    'storageBucket' : "safe-walk-server.appspot.com"
-})
+# #Firebase Realtime database access
+# <<<<<<< JYS
+# cred = credentials.Certificate('C:/Users/J/Desktop/skku/skku_2023-1/SafeWalk/safe-walk-server-firebase-adminsdk-7ymx1-f530c53769.json')
+# =======
+# cred = credentials.Certificate('safe-walk-server-firebase-adminsdk-7ymx1-34616ba0e4.json')
+# >>>>>>> master
+# firebase_admin.initialize_app(cred,{
+#     'databaseURL' : 'https://safe-walk-server-default-rtdb.firebaseio.com/',
+#     'storageBucket' : "safe-walk-server.appspot.com"
+# })  
 dir = db.reference()
 dir.update({'Red':0})
 dir.update({'Green':0})
